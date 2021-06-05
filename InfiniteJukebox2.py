@@ -129,6 +129,13 @@ class loopMusic:
         out = Out123()
         # same settings as original
         out.start(self.rate, self.channels, self.encoding)
+
+        # get trackname but remove directory stuff
+        str_iter = len(self.filename)
+        while self.filename[str_iter-1] != "/":
+            str_iter -= 1
+        trackname = self.filename[str_iter:len(self.filename)]
+        print(f"Now playing: {trackname}")
         
         frame_iter = 0
         while True:
@@ -177,6 +184,20 @@ class LooperFrame(Frame):
         self.track = None
         self.grid()
         self._create_widgets()
+
+        # create image and resize
+        pil_img = Image.open("renne.png")
+        width, height = pil_img.size
+        max_width, max_height = (200, 200)
+        resize_ratio = min(max_width/width, max_height/height)
+        new_size = (int(width * resize_ratio), int(height * resize_ratio))
+        pil_img = pil_img.resize(new_size)
+        
+        img = ImageTk.PhotoImage(pil_img)
+        img_label = Label(image = img)
+        img_label.image = img
+        
+        img_label.place(x = 275, y = 50)
         
     def _create_widgets(self):
         self.select_track_button = Button(self, text = "Select Track", command = self.select_track, width = 25)
@@ -200,9 +221,8 @@ class LooperFrame(Frame):
         self.track.loop()
     
     # extend track
-    # for now, just make it 5 minutes
     def extend(self):
-        self.track.extend(300)
+        self.track.extend(1800)
     
     
 def main():
