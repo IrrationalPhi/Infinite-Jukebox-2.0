@@ -3,8 +3,6 @@
 """
 Created on Tue May 25 14:41:25 2021
 inspired by https://nolannicholson.com/2019/10/27/looping-music-seamlessly.html
-
-@author: seanty
 """
 
 from mpg123 import Mpg123, Out123
@@ -52,7 +50,7 @@ class loopMusic:
         # filter out the noise by recording only max freq
         frames_fft = []
         
-        # checked and first and last frames have diff len
+        # first and last frames have diff len
         # so we omit
         start_frame, end_frame = (1, len(self.frames) -1)
         for i in range(start_frame, end_frame):
@@ -73,7 +71,7 @@ class loopMusic:
         # remove noise by masking low amp frequencies
         fft_2d_denoise = np.ma.masked_where(
             (fft_2d_sub.T < fft_2d_sub.max() * 0.25),
-            fft_2d_sub.T, 0)
+            fft_2d_sub.T, copy = False)
         
         # get max freq per frame
         # remove frames whose max freq = baseline freq
